@@ -179,6 +179,7 @@ IoTデバイスから収集したセンサーデータ。**保持期間: 90日**
 **制約・インデックス**
 - PRIMARY KEY: id
 - FOREIGN KEY: user_id → users.id ON DELETE CASCADE
+- UNIQUE: (device_id, recorded_at) — 重複INSERT防止（ECS Workerクラッシュ時の再処理対応）
 - INDEX: (device_id, recorded_at) — 時系列クエリ用
 - INDEX: (user_id, recorded_at) — ユーザー別集計用
 
