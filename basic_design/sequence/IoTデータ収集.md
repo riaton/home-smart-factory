@@ -96,7 +96,10 @@ sequenceDiagram
     end
 ```
 
-> **設計メモ:** IoT Core の Error Action に別 SQS（DLQ）を設定することで転送失敗を補足できるが、本システムでは IoTデータのロストは許容し、シンプルな構成とする。
+> **設計メモ:** IoT Core の Error Action に別 SQS（DLQ）を設定することで転送失敗を補足できるが、本システムでは以下の理由によりシンプルな構成とする:
+> - IoTデータは1分間隔で送信されるため、1-2件のロストは監視・分析への影響が軽微
+> - ロスト率の想定値は月間0.1%未満（AWS IoT Core SLA 99.9%を前提）
+> - 異常検知の精度への影響は限定的（閾値判定は個別データポイントで行うため）
 
 ---
 
@@ -186,5 +189,5 @@ sequenceDiagram
 | IoT Core → SQS | SQS一時障害 | 組み込みリトライ | なし（通常） |
 | IoT Core → SQS | リトライ上限超過 | メッセージロスト | あり（許容） |
 | ECS(Worker) → RDS | RDS一時障害 | VisibilityTimeout後にSQSリトライ | なし |
-| ECS(Worker) → RDS | リトライ上限超過 | DLQへ移動 | なし（DLQに保管） |
+| ECS(Worker) → RDS | リトライ上限超過 (maxReceiveCount=3) | DLQへ移動 | なし（DLQに保管） CloudWatch Alarmで検知 → 手動調査 → AWS CLIでリドライブ |
 | ECS(Worker) クラッシュ | OOM等 | ECS自動復旧 + SQSリトライ | なし |
