@@ -117,6 +117,9 @@ sequenceDiagram
     participant DLQ as Dead Letter Queue
     participant Worker as ECS(Worker)
     participant RDS as iot_data (table)
+    participant CW as CloudWatch
+    participant SNS as Amazon SNS
+    participant Admin as 管理者
 
     Worker->>SQS: ReceiveMessage
     SQS-->>Worker: Message (VisibilityTimeout=30s)
@@ -139,6 +142,11 @@ sequenceDiagram
         Note over SQS: ReceiveCount が maxReceiveCount を超過
         SQS->>DLQ: メッセージを Dead Letter Queue へ移動
         Note over DLQ: 調査・手動リドライブ用に保管
+        SQS->>CW: ApproximateNumberOfMessagesVisible (DLQ) > 0
+        Note over CW: Alarm条件成立<br/>DLQ内メッセージ数 ≥ 1
+        CW->>SNS: アラート発報（ALARM）
+        SNS-->>Admin: メール通知「DLQにメッセージあり」
+        Note over Admin: 手動調査 → AWS CLIでリドライブ
     end
 ```
 
@@ -157,6 +165,9 @@ sequenceDiagram
     participant Worker as ECS(Worker)
     participant RDS as iot_data (table)
     participant ECS as Amazon ECS<br/>（タスク管理）
+    participant CW as CloudWatch
+    participant SNS as Amazon SNS
+    participant Admin as 管理者
 
     Worker->>SQS: ReceiveMessage
     SQS-->>Worker: Message (VisibilityTimeout=30s)
@@ -166,7 +177,17 @@ sequenceDiagram
 
     Note over SQS: VisibilityTimeout (30s) 経過後<br/>メッセージがキューに戻る
 
+    ECS->>CW: RunningTaskCount = 0（1分毎に自動送信）
+    Note over CW: Alarm条件成立<br/>RunningTaskCount < 1
+    CW->>SNS: アラート発報（ALARM）
+    SNS-->>Admin: メール通知「ECS Workerクラッシュ検知」
+
     ECS->>Worker: タスク再起動（ECSの自動復旧）
+    ECS->>CW: RunningTaskCount = 1
+    Note over CW: OK状態へ復帰
+    CW->>SNS: 復旧通知（OK）
+    SNS-->>Admin: 復旧メール
+
     Worker->>SQS: ReceiveMessage (リトライ)
     SQS-->>Worker: Message (ReceiveCount+1)
     Worker->>RDS: INSERT INTO iot_data
@@ -175,6 +196,73 @@ sequenceDiagram
     Worker->>SQS: DeleteMessage
     SQS-->>Worker: 成功
 ```
+
+---
+
+## 2.5 IoT Core → SQS 連続転送失敗アラート
+
+**発生箇所:** AWS IoT Core → CloudWatch → Amazon SNS
+
+**条件:** 10分以内に転送失敗が3回以上発生した場合
+
+**メカニズム:** IoT Rule の実行失敗は CloudWatch の `RuleExecutionError` メトリクスにカウントされる。単発ロストは許容するが、連続失敗は SQS 障害や IoT Rule 設定ミスの可能性があるため通知する。
+
+```mermaid
+sequenceDiagram
+    participant IoTCore as AWS IoT Core
+    participant CW as CloudWatch
+    participant SNS as Amazon SNS
+    participant Admin as 管理者
+
+    loop 転送失敗が繰り返し発生（SQS障害等）
+        IoTCore->>IoTCore: ルール実行失敗（リトライ上限超過）
+        IoTCore->>CW: RuleExecutionError += 1
+    end
+
+    Note over CW: Alarm条件成立<br/>RuleExecutionError ≥ 3（直近10分のSum）
+    CW->>SNS: アラート発報（ALARM）
+    SNS-->>Admin: メール通知「IoT転送失敗多発」
+    Note over Admin: SQS障害・IoT Rule設定を確認
+```
+
+> **設計メモ:** CloudWatch Alarm の閾値（3回/10分）は運用中に調整する。複数台の RPi が同時にデータ送信するため、単一障害でも複数カウントが積みあがる点に注意。
+
+---
+
+## 2.6 ECS Worker → SQS ReceiveMessage 連続失敗アラート
+
+**発生箇所:** ECS Worker → Amazon SQS
+
+**原因:**
+- SQS 一時障害
+- ECS ↔ SQS 間のネットワーク断
+- IAM 権限エラー
+
+**条件:** 5分以内に ReceiveMessage が5回以上失敗した場合
+
+**メカニズム:** SQS の組み込みメトリクスには ReceiveMessage 失敗数がないため、Worker アプリが catch したエラーをカスタムメトリクスとして CloudWatch に送信する。
+
+```mermaid
+sequenceDiagram
+    participant SQS as Amazon SQS
+    participant Worker as ECS(Worker)
+    participant CW as CloudWatch
+    participant SNS as Amazon SNS
+    participant Admin as 管理者
+
+    loop ReceiveMessage が繰り返し失敗
+        Worker->>SQS: ReceiveMessage
+        SQS--xWorker: 接続エラー / タイムアウト
+        Worker->>CW: カスタムメトリクス送信<br/>SQSReceiveError += 1
+    end
+
+    Note over CW: Alarm条件成立<br/>SQSReceiveError ≥ 5（直近5分のSum）
+    CW->>SNS: アラート発報（ALARM）
+    SNS-->>Admin: メール通知「SQS ReceiveMessage 連続失敗」
+    Note over Admin: SQS障害・ネットワーク・IAM権限を確認
+```
+
+> **設計メモ:** `SQSReceiveError` は Worker アプリが送信するカスタムメトリクス。ロングポーリングの正常タイムアウト（WaitTimeSeconds=20 の空応答）はエラーに含めない。
 
 ------------------------------------------------------------------------
 
@@ -187,7 +275,8 @@ sequenceDiagram
 | RPi → IoT Core | 認証エラー | ローカルログ出力・停止 | あり（停止中のデータ） |
 | RPi → IoT Core | ネットワーク断 | 指数バックオフでリトライ | なし |
 | IoT Core → SQS | SQS一時障害 | 組み込みリトライ | なし（通常） |
-| IoT Core → SQS | リトライ上限超過 | メッセージロスト | あり（許容） |
+| IoT Core → SQS | リトライ上限超過 | メッセージロスト | あり（許容）、連続ロスト時は CloudWatch Alarm で通知 |
 | ECS(Worker) → RDS | RDS一時障害 | VisibilityTimeout後にSQSリトライ | なし |
-| ECS(Worker) → RDS | リトライ上限超過 (maxReceiveCount=3) | DLQへ移動 | なし（DLQに保管） CloudWatch Alarmで検知 → 手動調査 → AWS CLIでリドライブ |
-| ECS(Worker) クラッシュ | OOM等 | ECS自動復旧 + SQSリトライ | なし |
+| ECS(Worker) → RDS | リトライ上限超過 (maxReceiveCount=3) | DLQへ移動 | なし（DLQに保管、CloudWatch Alarm で通知） |
+| ECS(Worker) クラッシュ | OOM等 | ECS自動復旧 + SQSリトライ | なし（CloudWatch Alarm で通知） |
+| ECS(Worker) → SQS | ReceiveMessage 連続失敗 | CloudWatch Alarm 発報 | なし（メッセージはSQSに残存） |
