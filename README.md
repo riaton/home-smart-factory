@@ -1,4 +1,3 @@
 # home-smart-factory-base
-家庭環境をIoT工場に見立てた設備監視基盤の設計書・共通設定リポジトリ。
-要件定義・基本設計・詳細設計ドキュメントを一元管理し、他リポジトリから参照される。
-Claude Code 向けカスタムコマンド・スキル・エージェント定義も本リポジトリに集約する。
+Central hub for design docs and shared Claude Code configuration.
+Manages requirements, basic/detailed design documents referenced by all sibling repos.
