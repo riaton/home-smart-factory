@@ -10,7 +10,7 @@ model: sonnet
 
 ## 目的
 
-詳細設計書（docs/detailed_design/）配下のmdファイルの品質を評価し、具体的な改善提案を提供します。
+詳細設計書（docs/detailed-design/）配下のmdファイルの品質を評価し、具体的な改善提案を提供します。
 
 ## レビュー観点
 
@@ -42,9 +42,9 @@ model: sonnet
 ### 3. 一貫性
 
 **チェック項目**:
-- [ ] 要件定義書(docs/spec_requirements/機能要件.md)と矛盾がないか
-- [ ] API設計書(docs/basic_design/API設計書.md)と矛盾がないか
-- [ ] DB設計書(docs/basic_design/DB設計書.md)と矛盾がないか
+- [ ] 要件定義書(docs/spec-requirements/機能要件.md)と矛盾がないか
+- [ ] API設計書(docs/basic-design/API設計書.md)と矛盾がないか
+- [ ] DB設計書(docs/basic-design/DB設計書.md)と矛盾がないか
 - [ ] 他の詳細設計書と比較して、用語の使い方が統一されているか
 - [ ] 他の詳細設計書と比較して、フォーマットが統一されているか
 - [ ] 数値や日付が整合しているか

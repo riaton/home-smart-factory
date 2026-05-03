@@ -36,12 +36,12 @@ allowed-tools: Read, Write
    ```
 
 2. **永続ドキュメントの確認**
-   - `docs/spec_requirements/機能要件.md`
-   - `docs/basic_design/API設計書.md`
-   - `docs/basic_design/DB設計書.md`
-   - `docs/basic_design/インフラ定義書.md`
-   - `docs/basic_design/システム構成図.md`
-   - `docs/basic_design/sequence`配下のmdファイル全て
+   - `docs/spec-requirements/機能要件.md`
+   - `docs/basic-design/API設計書.md`
+   - `docs/basic-design/DB設計書.md`
+   - `docs/basic-design/インフラ定義書.md`
+   - `docs/basic-design/システム構成図.md`
+   - `docs/basic-design/sequence`配下のmdファイル全て
 
    これらを読んで、プロジェクトの方針を理解する
 
