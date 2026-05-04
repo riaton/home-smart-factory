@@ -1,5 +1,5 @@
 ---
-name: development-guidelines
+name: development-guideline-java
 description: Java / Spring Boot でコードを実装する際に参照するコーディング規約・開発プロセスガイド。実装・レビュー・テスト設計・リリース準備時に使用する。
 allowed-tools: Read, Write, Edit
 ---
