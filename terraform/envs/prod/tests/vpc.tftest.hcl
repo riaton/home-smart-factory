@@ -1,5 +1,7 @@
 variables {
   admin_cidr_blocks = ["192.0.2.0/32"]
+  db_username       = "testadmin"
+  db_password       = "testpassword123"
 }
 
 run "public_subnets_have_two_azs" {
