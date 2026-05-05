@@ -210,3 +210,9 @@ __marimo__/
 memo.txt
 review/
 .mcp.json
+.steering/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
