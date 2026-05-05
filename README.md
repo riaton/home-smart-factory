@@ -1,2 +1,3 @@
-# home-smart-factory
-A home-based smart factory simulation: IoT data collection, cloud ingestion, and monitoring dashboard built on AWS.
+# home-smart-factory-base
+Central hub for design docs and shared Claude Code configuration.
+Manages requirements, basic/detailed design documents referenced by all sibling repos.

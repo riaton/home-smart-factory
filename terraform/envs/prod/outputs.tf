@@ -92,3 +92,28 @@ output "ecr_repository_arns" {
   description = "ECR リポジトリ ARN のマップ（サービス名 → ARN）"
   value       = module.ecr.repository_arns
 }
+
+output "db_endpoint" {
+  description = "RDS エンドポイント（ホスト名）"
+  value       = module.rds.db_endpoint
+}
+
+output "db_port" {
+  description = "RDS ポート番号"
+  value       = module.rds.db_port
+}
+
+output "db_name" {
+  description = "データベース名"
+  value       = module.rds.db_name
+}
+
+output "redis_primary_endpoint" {
+  description = "Redis プライマリエンドポイント"
+  value       = module.elasticache.redis_primary_endpoint
+}
+
+output "redis_port" {
+  description = "Redis ポート番号"
+  value       = module.elasticache.redis_port
+}
