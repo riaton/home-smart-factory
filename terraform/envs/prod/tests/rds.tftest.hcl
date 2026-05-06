@@ -17,8 +17,9 @@ mock_provider "aws" {
 variables {
   admin_cidr_blocks = ["192.0.2.0/32"]
   # テスト用ダミー認証情報（機密情報ではない）
-  db_username = "testadmin"
-  db_password = "testpassword123"
+  db_username    = "testadmin"
+  db_password    = "testpassword123"
+  operator_email = "test@example.com"
 }
 
 run "rds_instance_identifier_contains_name_prefix" {
