@@ -20,6 +20,7 @@ variables {
   db_username    = "testadmin"
   db_password    = "testpassword123"
   operator_email = "test@example.com"
+  domain_name    = "api.example.com"
 }
 
 run "sns_topic_names" {

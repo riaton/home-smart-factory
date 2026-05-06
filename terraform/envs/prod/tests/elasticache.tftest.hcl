@@ -20,6 +20,7 @@ variables {
   db_username    = "testadmin"
   db_password    = "testpassword123"
   operator_email = "test@example.com"
+  domain_name    = "api.example.com"
 }
 
 run "redis_replication_group_config" {

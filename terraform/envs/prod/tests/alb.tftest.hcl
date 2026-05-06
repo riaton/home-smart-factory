@@ -23,17 +23,22 @@ variables {
   domain_name    = "api.example.com"
 }
 
-run "sqs_queue_names" {
+run "alb_name" {
   command = plan
 
-  # キュー名は設定値から確定するため plan 時点で既知の値としてアサートできる
+  # ALB 名は name_prefix から確定するため plan 時点で既知の値としてアサートできる
   assert {
-    condition     = module.sqs.main_queue_name == "home-smart-factory-iot-data-queue"
-    error_message = "メインキュー名が想定と異なります"
+    condition     = module.alb.alb_name == "home-smart-factory-alb"
+    error_message = "ALB 名が想定と異なります"
   }
+}
 
+run "alb_target_group_name" {
+  command = plan
+
+  # ターゲットグループ名は name_prefix から確定するため plan 時点で既知の値としてアサートできる
   assert {
-    condition     = module.sqs.dlq_name == "home-smart-factory-iot-data-dlq"
-    error_message = "DLQ 名が想定と異なります"
+    condition     = module.alb.target_group_name == "home-smart-factory-backend-tg"
+    error_message = "ターゲットグループ名が想定と異なります"
   }
 }

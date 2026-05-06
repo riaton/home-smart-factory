@@ -21,6 +21,7 @@ variables {
   db_username       = "testadmin"
   db_password       = "testpassword123"
   operator_email    = "test@example.com"
+  domain_name       = "api.example.com"
 }
 
 run "ecr_repository_names_contain_all_services" {
