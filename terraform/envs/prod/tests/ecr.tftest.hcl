@@ -18,6 +18,9 @@ mock_provider "aws" {
 
 variables {
   admin_cidr_blocks = ["192.0.2.0/32"]
+  db_username       = "testadmin"
+  db_password       = "testpassword123"
+  operator_email    = "test@example.com"
 }
 
 run "ecr_repository_names_contain_all_services" {

@@ -18,3 +18,43 @@ module "ecr" {
 
   name_prefix = local.name_prefix
 }
+
+module "rds" {
+  source = "../../modules/rds"
+
+  name_prefix        = local.name_prefix
+  private_subnet_ids = module.vpc.private_subnet_ids
+  sg_rds_id          = module.vpc.sg_rds_id
+  db_username        = var.db_username
+  db_password        = var.db_password
+}
+
+module "elasticache" {
+  source = "../../modules/elasticache"
+
+  name_prefix        = local.name_prefix
+  private_subnet_ids = module.vpc.private_subnet_ids
+  sg_redis_id        = module.vpc.sg_redis_id
+}
+
+module "sqs" {
+  source = "../../modules/sqs"
+
+  name_prefix = local.name_prefix
+}
+
+module "sns" {
+  source = "../../modules/sns"
+
+  name_prefix    = local.name_prefix
+  operator_email = var.operator_email
+}
+
+module "iot" {
+  source = "../../modules/iot"
+
+  name_prefix   = local.name_prefix
+  aws_region    = var.aws_region
+  sqs_queue_arn = module.sqs.main_queue_arn
+  sqs_queue_url = module.sqs.main_queue_url
+}
