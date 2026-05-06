@@ -21,3 +21,9 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "operator_email" {
+  description = "SNS メール通知先（TF_VAR_operator_email で注入）"
+  type        = string
+  sensitive   = true
+}
