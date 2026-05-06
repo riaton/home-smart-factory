@@ -27,3 +27,8 @@ variable "operator_email" {
   type        = string
   sensitive   = true
 }
+
+variable "domain_name" {
+  description = "ALB および ACM 証明書のドメイン名（例: api.example.com）"
+  type        = string
+}

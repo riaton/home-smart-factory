@@ -216,3 +216,5 @@ review/
 .terraform/
 *.tfstate
 *.tfstate.backup
+# Lambda デプロイパッケージ（terraform archive_file が自動生成）
+terraform/modules/lambda/*.zip
