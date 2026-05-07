@@ -277,3 +277,48 @@ output "lambda_log_group_name" {
   description = "Lambda バッチ再実行 CloudWatch ロググループ名"
   value       = module.lambda.log_group_name
 }
+
+output "schedule_rule_name" {
+  description = "日次バッチスケジュール EventBridge ルール名"
+  value       = module.eventbridge.schedule_rule_name
+}
+
+output "batch_stopped_rule_name" {
+  description = "バッチタスク異常停止検知 EventBridge ルール名"
+  value       = module.eventbridge.batch_stopped_rule_name
+}
+
+output "anomaly_insert_failure_alarm_name" {
+  description = "異常検知失敗 CloudWatch アラーム名"
+  value       = module.cloudwatch.anomaly_insert_failure_alarm_name
+}
+
+output "iot_data_dlq_alarm_name" {
+  description = "DLQ メッセージ蓄積 CloudWatch アラーム名"
+  value       = module.cloudwatch.iot_data_dlq_alarm_name
+}
+
+output "rds_cpu_high_alarm_name" {
+  description = "RDS CPU 使用率 CloudWatch アラーム名"
+  value       = module.cloudwatch.rds_cpu_high_alarm_name
+}
+
+output "rds_storage_low_alarm_name" {
+  description = "RDS ストレージ残量 CloudWatch アラーム名"
+  value       = module.cloudwatch.rds_storage_low_alarm_name
+}
+
+output "rds_connections_high_alarm_name" {
+  description = "RDS 接続数 CloudWatch アラーム名"
+  value       = module.cloudwatch.rds_connections_high_alarm_name
+}
+
+output "ecs_worker_task_count_low_alarm_name" {
+  description = "ECS Worker タスク数 CloudWatch アラーム名"
+  value       = module.cloudwatch.ecs_worker_task_count_low_alarm_name
+}
+
+output "iot_rule_error_alarm_name" {
+  description = "IoT ルールエラー CloudWatch アラーム名"
+  value       = module.cloudwatch.iot_rule_error_alarm_name
+}

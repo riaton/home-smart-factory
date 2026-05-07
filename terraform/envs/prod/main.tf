@@ -118,3 +118,28 @@ module "lambda" {
   subnet_id                    = module.vpc.private_subnet_ids["1a"]
   security_group_id            = module.vpc.sg_ecs_batch_id
 }
+
+module "eventbridge" {
+  source = "../../modules/eventbridge"
+
+  name_prefix                  = local.name_prefix
+  aws_region                   = var.aws_region
+  ecs_cluster_arn              = module.ecs.cluster_arn
+  batch_task_definition_arn    = module.ecs.batch_task_definition_arn
+  batch_task_definition_family = module.ecs.batch_task_definition_family
+  eventbridge_role_arn         = module.iam.eventbridge_ecs_role_arn
+  batch_task_failure_sns_arn   = module.sns.batch_task_failure_arn
+  subnet_id                    = module.vpc.private_subnet_ids["1a"]
+  security_group_id            = module.vpc.sg_ecs_batch_id
+}
+
+module "cloudwatch" {
+  source = "../../modules/cloudwatch"
+
+  name_prefix               = local.name_prefix
+  cloudwatch_alarms_sns_arn = module.sns.cloudwatch_alarms_arn
+  worker_log_group_name     = module.ecs.worker_log_group_name
+  dlq_name                  = module.sqs.dlq_name
+  ecs_cluster_name          = module.ecs.cluster_name
+  iot_rule_name             = module.iot.iot_rule_name
+}
