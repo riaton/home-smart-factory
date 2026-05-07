@@ -172,3 +172,153 @@ output "iot_rule_log_group_name" {
   description = "IoT Rule エラーログ CloudWatch ロググループ名"
   value       = module.iot.iot_rule_log_group_name
 }
+
+output "alb_arn" {
+  description = "ALB ARN"
+  value       = module.alb.alb_arn
+}
+
+output "alb_name" {
+  description = "ALB 名"
+  value       = module.alb.alb_name
+}
+
+output "alb_dns_name" {
+  description = "ALB の DNS 名（CNAME レコード設定に使用）"
+  value       = module.alb.alb_dns_name
+}
+
+output "alb_zone_id" {
+  description = "ALB の Route53 Hosted Zone ID（Alias レコード設定に使用）"
+  value       = module.alb.alb_zone_id
+}
+
+output "target_group_arn" {
+  description = "Backend ターゲットグループ ARN"
+  value       = module.alb.target_group_arn
+}
+
+output "target_group_name" {
+  description = "Backend ターゲットグループ名"
+  value       = module.alb.target_group_name
+}
+
+output "certificate_arn" {
+  description = "ACM 証明書 ARN"
+  value       = module.alb.certificate_arn
+}
+
+output "acm_validation_options" {
+  description = "ACM DNS 検証レコード情報（apply 前に DNS へ手動追加すること）"
+  value       = module.alb.acm_validation_options
+}
+
+output "ecs_cluster_name" {
+  description = "ECS クラスター名"
+  value       = module.ecs.cluster_name
+}
+
+output "ecs_cluster_arn" {
+  description = "ECS クラスター ARN"
+  value       = module.ecs.cluster_arn
+}
+
+output "worker_task_definition_arn" {
+  description = "ECS Worker タスク定義 ARN"
+  value       = module.ecs.worker_task_definition_arn
+}
+
+output "batch_task_definition_arn" {
+  description = "ECS Batch タスク定義 ARN"
+  value       = module.ecs.batch_task_definition_arn
+}
+
+output "backend_task_definition_arn" {
+  description = "ECS Backend タスク定義 ARN"
+  value       = module.ecs.backend_task_definition_arn
+}
+
+output "grafana_task_definition_arn" {
+  description = "ECS Grafana タスク定義 ARN"
+  value       = module.ecs.grafana_task_definition_arn
+}
+
+output "worker_log_group_name" {
+  description = "ECS Worker CloudWatch ロググループ名"
+  value       = module.ecs.worker_log_group_name
+}
+
+output "batch_log_group_name" {
+  description = "ECS Batch CloudWatch ロググループ名"
+  value       = module.ecs.batch_log_group_name
+}
+
+output "backend_log_group_name" {
+  description = "ECS Backend CloudWatch ロググループ名"
+  value       = module.ecs.backend_log_group_name
+}
+
+output "grafana_log_group_name" {
+  description = "ECS Grafana CloudWatch ロググループ名"
+  value       = module.ecs.grafana_log_group_name
+}
+
+output "lambda_function_name" {
+  description = "Lambda バッチ再実行関数名"
+  value       = module.lambda.function_name
+}
+
+output "lambda_function_arn" {
+  description = "Lambda バッチ再実行関数 ARN"
+  value       = module.lambda.function_arn
+}
+
+output "lambda_log_group_name" {
+  description = "Lambda バッチ再実行 CloudWatch ロググループ名"
+  value       = module.lambda.log_group_name
+}
+
+output "schedule_rule_name" {
+  description = "日次バッチスケジュール EventBridge ルール名"
+  value       = module.eventbridge.schedule_rule_name
+}
+
+output "batch_stopped_rule_name" {
+  description = "バッチタスク異常停止検知 EventBridge ルール名"
+  value       = module.eventbridge.batch_stopped_rule_name
+}
+
+output "anomaly_insert_failure_alarm_name" {
+  description = "異常検知失敗 CloudWatch アラーム名"
+  value       = module.cloudwatch.anomaly_insert_failure_alarm_name
+}
+
+output "iot_data_dlq_alarm_name" {
+  description = "DLQ メッセージ蓄積 CloudWatch アラーム名"
+  value       = module.cloudwatch.iot_data_dlq_alarm_name
+}
+
+output "rds_cpu_high_alarm_name" {
+  description = "RDS CPU 使用率 CloudWatch アラーム名"
+  value       = module.cloudwatch.rds_cpu_high_alarm_name
+}
+
+output "rds_storage_low_alarm_name" {
+  description = "RDS ストレージ残量 CloudWatch アラーム名"
+  value       = module.cloudwatch.rds_storage_low_alarm_name
+}
+
+output "rds_connections_high_alarm_name" {
+  description = "RDS 接続数 CloudWatch アラーム名"
+  value       = module.cloudwatch.rds_connections_high_alarm_name
+}
+
+output "ecs_worker_task_count_low_alarm_name" {
+  description = "ECS Worker タスク数 CloudWatch アラーム名"
+  value       = module.cloudwatch.ecs_worker_task_count_low_alarm_name
+}
+
+output "iot_rule_error_alarm_name" {
+  description = "IoT ルールエラー CloudWatch アラーム名"
+  value       = module.cloudwatch.iot_rule_error_alarm_name
+}

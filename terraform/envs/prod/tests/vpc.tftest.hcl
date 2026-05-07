@@ -3,6 +3,7 @@ variables {
   db_username       = "testadmin"
   db_password       = "testpassword123"
   operator_email    = "test@example.com"
+  domain_name       = "api.example.com"
 }
 
 run "public_subnets_have_two_azs" {
