@@ -2,7 +2,7 @@
   "permissions": {
     "allow": [
       "Skill(steering)",
-      "Skill(development-guidelines)"
+      "Skill(development-guidelines-terraform)"
     ],
     "deny": [],
     "ask": []
